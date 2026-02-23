@@ -1,0 +1,30 @@
+name: Dev Start Check
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  dev-start:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify npm run dev starts
+        run: |
+          timeout 60s npm run dev
+          status=$?
+          if [ "$status" -ne 0 ] && [ "$status" -ne 124 ]; then
+            exit "$status"
+          fi
