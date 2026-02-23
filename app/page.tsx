@@ -6,8 +6,14 @@ import { questions } from "../data/questions";
 
 const QUIZ_COUNT = 5;
 
-const selectRandomQuestions = () =>
-  [...questions].sort(() => Math.random() - 0.5).slice(0, QUIZ_COUNT);
+const selectRandomQuestions = () => {
+  const shuffled = [...questions];
+  for (let i = shuffled.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled.slice(0, QUIZ_COUNT);
+};
 
 export default function HomePage() {
   const [selectedQuestions, setSelectedQuestions] = useState(questions.slice(0, QUIZ_COUNT));
@@ -18,8 +24,10 @@ export default function HomePage() {
   const [answered, setAnswered] = useState(false);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setSelectedQuestions(selectRandomQuestions());
+    const timer = setTimeout(() => {
+      setSelectedQuestions(selectRandomQuestions());
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleAnswer = (correct: boolean) => {
