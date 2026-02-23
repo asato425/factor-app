@@ -1,15 +1,26 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { QuestionCard } from "../components/QuestionCard";
 import { questions } from "../data/questions";
 
+const QUIZ_COUNT = 5;
+
+const selectRandomQuestions = () =>
+  [...questions].sort(() => Math.random() - 0.5).slice(0, QUIZ_COUNT);
+
 export default function HomePage() {
+  const [selectedQuestions, setSelectedQuestions] = useState(questions.slice(0, QUIZ_COUNT));
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [showExplanation, setShowExplanation] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [answered, setAnswered] = useState(false);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSelectedQuestions(selectRandomQuestions());
+  }, []);
 
   const handleAnswer = (correct: boolean) => {
     if (answered) return; // すでに回答済みなら無視
@@ -26,16 +37,17 @@ export default function HomePage() {
   };
 
   // 終了画面
-  if (currentIndex >= questions.length) {
+  if (currentIndex >= selectedQuestions.length) {
     return (
       <div className="max-w-md mx-auto mt-10 text-center">
         <h1 className="text-3xl font-bold mb-4">おつかれさまでした！</h1>
         <p className="mb-4 text-lg">
-          スコア: {score} / {questions.length}
+          スコア: {score} / {selectedQuestions.length}
         </p>
         <button
           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-800 transition-colors"
           onClick={() => {
+            setSelectedQuestions(selectRandomQuestions());
             setCurrentIndex(0);
             setScore(0);
             setShowExplanation(false);
@@ -53,15 +65,15 @@ export default function HomePage() {
       <h1 className="text-3xl font-bold mb-6 text-center">因数分解クイズ</h1>
 
       <QuestionCard
-        question={questions[currentIndex]}
+        question={selectedQuestions[currentIndex]}
         onAnswer={handleAnswer}
       />
 
       {showExplanation && (
         <div className="mt-4 p-4 bg-gray-100 rounded-lg border border-gray-300">
           <p className="mb-2 font-semibold">{isCorrect ? "正解！🎉" : "不正解…😢"}</p>
-          <p className="mb-4">{questions[currentIndex].explanation}</p>
-          {currentIndex < questions.length - 1 ? (
+          <p className="mb-4">{selectedQuestions[currentIndex].explanation}</p>
+          {currentIndex < selectedQuestions.length - 1 ? (
             <button
               className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700 transition-colors"
               onClick={nextQuestion}
@@ -71,7 +83,7 @@ export default function HomePage() {
             ) : (
             <button
               className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-800 transition-colors"
-              onClick={() => setCurrentIndex(questions.length)}
+              onClick={() => setCurrentIndex(selectedQuestions.length)}
             >
               スコアを見る
             </button>
