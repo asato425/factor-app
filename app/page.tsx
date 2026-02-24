@@ -12,9 +12,11 @@ const MAX_NORMAL_COEFFICIENT = 50;
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 const getMaxCoefficient = (expression: string) => {
-  const numbers = expression.match(/-?\d+/g);
-  if (!numbers) return 0;
-  return Math.max(...numbers.map((value) => Math.abs(Number(value))));
+  const numbers = Array.from(expression.matchAll(/-?\d+/g))
+    .filter((match) => match.index === 0 || expression[match.index - 1] !== "^")
+    .map(([value]) => value);
+  if (numbers.length === 0) return 0;
+  return numbers.reduce((max, value) => Math.max(max, Math.abs(Number(value))), 0);
 };
 
 const getQuestionsByDifficulty = (difficulty: Difficulty) => {
