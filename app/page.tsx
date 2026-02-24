@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { QuestionCard } from "../components/QuestionCard";
 import { questions } from "../data/questions";
 
-const QUIZ_COUNT = 100;
+const QUIZ_COUNT = 5;
 
 const selectRandomQuestions = () => {
   const shuffled = [...questions];
