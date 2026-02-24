@@ -106,5 +106,34 @@ export const questions: Question[] = [
     question: "x^2 - 25",
     answer: 1,
     explanation: "x^2-25は平方差の公式で (x-5)(x+5) と因数分解できます。"
-  }
+  },
+  ...Array.from({ length: 20 }, (_, i) => {
+    const n = i + 2;
+    const a = i + 3;
+    const p = i + 4;
+    const q = i + 6;
+
+    return [
+      {
+        question: `${a}x^2 - ${a * n * n}`,
+        answer: 0,
+        explanation: `まず${a}を共通因数でくくり、その後に平方差の公式を使う練習問題です。`
+      },
+      {
+        question: `x^2 + ${2 * n}x + ${n * n}`,
+        answer: 1,
+        explanation: `(x+${n})^2 の形なので、公式で素早く因数分解できます。`
+      },
+      {
+        question: `x^2 + ${p + q}x + ${p * q}`,
+        answer: 2,
+        explanation: `積が${p * q}、和が${p + q}になる2数を見つけるたすき掛けの練習問題です。`
+      },
+      {
+        question: `x^4 + ${p + q}x^2 + ${p * q}`,
+        answer: 3,
+        explanation: `x^2をtと置くと t^2+${p + q}t+${p * q} となり、置換法で整理できます。`
+      }
+    ];
+  }).flat()
 ];
