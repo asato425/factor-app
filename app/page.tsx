@@ -7,15 +7,23 @@ import { Question, questions } from "../data/questions";
 const DEFAULT_QUIZ_COUNT = 5;
 const difficultyOptions = ["かんたん", "ふつう", "むずかしい"] as const;
 type Difficulty = (typeof difficultyOptions)[number];
-const MAX_EASY_ANSWER = 1;
-const MAX_NORMAL_ANSWER = 2;
+const MAX_EASY_COEFFICIENT = 9;
+const MAX_NORMAL_COEFFICIENT = 50;
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+const getMaxCoefficient = (expression: string) => {
+  const numbers = Array.from(expression.matchAll(/-?\d+/g))
+    .filter((match) => match.index === 0 || expression[match.index - 1] !== "^")
+    .map(([value]) => value);
+  if (numbers.length === 0) return 0;
+  return numbers.reduce((max, value) => Math.max(max, Math.abs(Number(value))), 0);
+};
 
 const getQuestionsByDifficulty = (difficulty: Difficulty) => {
   return questions.filter((question) => {
-    if (difficulty === "かんたん") return question.answer <= MAX_EASY_ANSWER;
-    if (difficulty === "ふつう") return question.answer <= MAX_NORMAL_ANSWER;
+    const maxCoefficient = getMaxCoefficient(question.question);
+    if (difficulty === "かんたん") return maxCoefficient <= MAX_EASY_COEFFICIENT;
+    if (difficulty === "ふつう") return maxCoefficient <= MAX_NORMAL_COEFFICIENT;
     return true;
   });
 };
