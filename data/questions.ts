@@ -106,5 +106,34 @@ export const questions: Question[] = [
     question: "x^2 - 25",
     answer: 1,
     explanation: "x^2-25は平方差の公式で (x-5)(x+5) と因数分解できます。"
-  }
+  },
+  ...Array.from({ length: 20 }, (_unused, i) => {
+    const baseNumber = i + 2;
+    const commonFactor = i + 3;
+    const firstNumber = i + 4;
+    const secondNumber = i + 6;
+
+    return [
+      {
+        question: `${commonFactor}x^2 - ${commonFactor * baseNumber ** 2}`,
+        answer: 0,
+        explanation: `まず${commonFactor}を共通因数でくくり、その後に平方差の公式を使う練習問題です。`
+      },
+      {
+        question: `x^2 + ${2 * baseNumber}x + ${baseNumber ** 2}`,
+        answer: 1,
+        explanation: `(x+${baseNumber})^2 の形なので、公式で素早く因数分解できます。`
+      },
+      {
+        question: `x^2 + ${firstNumber + secondNumber}x + ${firstNumber * secondNumber}`,
+        answer: 2,
+        explanation: `積が${firstNumber * secondNumber}、和が${firstNumber + secondNumber}になる2数を見つけるたすき掛けの練習問題です。`
+      },
+      {
+        question: `x^4 + ${firstNumber + secondNumber}x^2 + ${firstNumber * secondNumber}`,
+        answer: 3,
+        explanation: `x^2をtと置くと t^2+${firstNumber + secondNumber}t+${firstNumber * secondNumber} となり、置換法で整理できます。`
+      }
+    ];
+  }).flat()
 ];
